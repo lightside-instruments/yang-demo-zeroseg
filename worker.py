@@ -6,6 +6,7 @@ import argparse
 from yangcli import yangcli
 from lxml import etree
 import yangrpc
+import ZeroSeg.led as led
 
 def main():
 	print("""
@@ -51,7 +52,7 @@ def main():
 	time.sleep(1)
 
 
-
+	zeroseg_led = led.sevensegment(cascaded=2)
 	while(1):
 
 		result = yangcli(conn, "xget /line-display")
@@ -66,6 +67,7 @@ def main():
 
 		if(len(text)==1):
 			print text[0].text
+			zeroseg_led.write_text(1,text[0].text)
 		time.sleep(1)
 
 	return(0)
