@@ -1,0 +1,38 @@
+module lsi-demo-line-display-instance-id {
+  namespace "http://lightside-instruments.com/ns/demo-line-display-instance-id";
+  prefix demo-ldi;
+
+  import lsi-demo-line-display {
+    prefix demo-ld;
+  }
+
+  organization
+    "Lightside Instruments";
+  description
+    "Module augmenting the demo-line-display module
+     content-type choice with new instance-id case
+     where instead of static text message an indirect
+     instance-identifier reference is used e.g.
+     /interface/interface[name='wlp2s0']/statistics/out-unicast-pkts.";
+
+  revision 2019-10-11 {
+    description
+      "Initial revision.";
+  }
+
+  augment "/demo-ld:line-display/demo-ld:content-type" {
+    case indirect {
+      leaf instance-id {
+        type instance-identifier {
+          require-instance false;
+        }
+        mandatory true;
+      }
+      leaf update-interval {
+        type uint32;
+        units "milliseconds";
+        mandatory true;
+      }
+    }
+  }
+}

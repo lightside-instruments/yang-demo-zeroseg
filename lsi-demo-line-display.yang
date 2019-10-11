@@ -1,0 +1,26 @@
+module lsi-demo-line-display {
+  namespace "http://lightside-instruments.com/ns/demo-line-display";
+  prefix demo-ld;
+
+  organization
+    "Lightside Instruments";
+  description
+    "Demo module for management of a
+     display that can show single line
+     e.g. row with symbols.";
+
+  revision 2019-10-11 {
+    description
+      "Initial revision.";
+  }
+
+  container line-display {
+    choice content-type {
+      case static {
+        leaf text {
+          type string;
+        }
+      }
+    }
+  }
+}
