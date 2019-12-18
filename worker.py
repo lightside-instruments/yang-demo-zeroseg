@@ -71,6 +71,7 @@ def main():
 		if(len(text)==1):
 			print text[0].text
 			#zeroseg_led.write_text(1,text[0].text)
+			mylcd.lcd_clear()
 			mylcd.lcd_display_string(text[0].text, 1)
 		time.sleep(1)
 
