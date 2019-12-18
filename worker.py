@@ -6,7 +6,9 @@ import argparse
 from yangcli import yangcli
 from lxml import etree
 import yangrpc
-import ZeroSeg.led as led
+#import ZeroSeg.led as led
+import I2C_LCD_driver
+#from time import *
 
 def main():
 	print("""
@@ -51,8 +53,9 @@ def main():
 
 	time.sleep(1)
 
+	mylcd = I2C_LCD_driver.lcd()
 
-	zeroseg_led = led.sevensegment(cascaded=2)
+	#zeroseg_led = led.sevensegment(cascaded=2)
 	while(1):
 
 		result = yangcli(conn, "xget /line-display")
@@ -67,7 +70,8 @@ def main():
 
 		if(len(text)==1):
 			print text[0].text
-			zeroseg_led.write_text(1,text[0].text)
+			#zeroseg_led.write_text(1,text[0].text)
+			mylcd.lcd_display_string(text[0].text, 1)
 		time.sleep(1)
 
 	return(0)
