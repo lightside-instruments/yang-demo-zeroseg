@@ -1,0 +1,17 @@
+Source: yang-demo-line-display
+Section: net
+Priority: optional
+Maintainer: Vladimir Vassilev <vladimir@lightside-instruments.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.8
+Homepage: http://lightside-instruments.com
+
+Package: yang-demo-line-display
+Section: net
+Architecture: all
+Depends: ${misc:Depends}
+Multi-Arch: foreign
+Description: Demo for YANG and NETCONF
+ .
+ Python script displaying text to display according to YANG/NETCONF
+ configuration. Installs systemd service file.
