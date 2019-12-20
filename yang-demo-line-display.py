@@ -67,8 +67,12 @@ def main():
 				update_interval = result.xpath('./data/line-display/update-interval')
 				result2 = yangcli(conn, "xget %s"%(instance_id[0].text))
 				text = result2.xpath('./data/%s'%(instance_id[0].text))
+				mylcd.lcd_clear()
+				mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
+				mylcd.lcd_display_string(text[0].text, 2)
 
-		if(len(text)==1):
+
+		else:
 			print text[0].text
 			#zeroseg_led.write_text(1,text[0].text)
 			mylcd.lcd_clear()
