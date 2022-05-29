@@ -58,14 +58,14 @@ def main():
 	#zeroseg_led = led.sevensegment(cascaded=2)
 	while(1):
 
-		result = yangcli(conn, "xget /line-display")
+		result = yangcli.yangcli(conn, "xget /line-display")
 		text = result.xpath('./data/line-display/text')
 		if(len(text)!=1):
 			instance_id = result.xpath('./data/line-display/instance-id')
 			if(len(instance_id)==1):
-				print instance_id[0].text
+				print(instance_id[0].text)
 				update_interval = result.xpath('./data/line-display/update-interval')
-				result2 = yangcli(conn, "xget %s"%(instance_id[0].text))
+				result2 = yangcli.yangcli(conn, "xget %s"%(instance_id[0].text))
 				text = result2.xpath('./data/%s'%(instance_id[0].text))
 				mylcd.lcd_clear()
 				mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
@@ -73,7 +73,7 @@ def main():
 
 
 		else:
-			print text[0].text
+			print(text[0].text)
 			#zeroseg_led.write_text(1,text[0].text)
 			mylcd.lcd_clear()
 			mylcd.lcd_display_string(text[0].text, 1)
