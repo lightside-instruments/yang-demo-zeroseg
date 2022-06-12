@@ -1,6 +1,6 @@
 
 Server:
- /usr/sbin/netconfd --module=lsi-demo-line-display.yang --module=lsi-demo-line-display-instance-id.yang --module=ietf-interfaces --no-startup --log-level="debug4" --superuser="$USER"
+ /usr/sbin/netconfd --module=lsi-demo-line-display.yang --module=ietf-interfaces --no-startup --log-level="debug4" --superuser="$USER"
 
 Agent:
  python worker.py --server=localhost --user=${USER}

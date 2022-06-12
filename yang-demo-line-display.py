@@ -10,6 +10,7 @@ import yangrpc
 import I2C_LCD_driver
 #from time import *
 
+
 def main():
 	print("""
 #Description: Connects and updates the display according to the configuration.
@@ -51,32 +52,72 @@ def main():
 		print("Error: yangrpc failed to connect!")
 		return(-1)
 
+	print("Connected ..")
 	time.sleep(1)
 
 	mylcd = I2C_LCD_driver.lcd()
 
 	#zeroseg_led = led.sevensegment(cascaded=2)
+	remote_conn = {}
 	while(1):
 
 		result = yangcli.yangcli(conn, "xget /line-display")
+
 		text = result.xpath('./data/line-display/text')
-		if(len(text)!=1):
-			instance_id = result.xpath('./data/line-display/instance-id')
-			if(len(instance_id)==1):
-				print(instance_id[0].text)
-				update_interval = result.xpath('./data/line-display/update-interval')
-				result2 = yangcli.yangcli(conn, "xget %s"%(instance_id[0].text))
-				text = result2.xpath('./data/%s'%(instance_id[0].text))
-				mylcd.lcd_clear()
-				mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
-				mylcd.lcd_display_string(text[0].text, 2)
+		instance_id = result.xpath('./data/line-display/instance-id')
+		remote_instance_id = result.xpath('./data/line-display/remote-instance-id')
 
-
-		else:
+		if(len(text)==1):
 			print(text[0].text)
 			#zeroseg_led.write_text(1,text[0].text)
 			mylcd.lcd_clear()
 			mylcd.lcd_display_string(text[0].text, 1)
+
+                elif(len(instance_id)==1):
+			print(instance_id[0].text)
+			update_interval = result.xpath('./data/line-display/update-interval')
+			result2 = yangcli.yangcli(conn, "xget %s"%(instance_id[0].text))
+			text = result2.xpath('./data/%s'%(instance_id[0].text))
+			mylcd.lcd_clear()
+			mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
+			mylcd.lcd_display_string(text[0].text, 2)
+
+		elif(len(remote_instance_id)==1):
+			update_interval = result.xpath('./data/line-display/update-interval')
+			remote_address = result.xpath('./data/line-display/remote-netconf/ssh/tcp-client-parameters/remote-address')[0].text;
+			remote_port = result.xpath('./data/line-display/remote-netconf/ssh/tcp-client-parameters/remote-port')[0].text;
+			remote_ssh_username = result.xpath('./data/line-display/remote-netconf/ssh/ssh-client-parameters/client-identity/username')[0].text;
+			remote_ssh_password = result.xpath('./data/line-display/remote-netconf/ssh/ssh-client-parameters/client-identity/password/cleartext-password')[0].text;
+			remote_instance_id = result.xpath('./data/line-display/remote-instance-id')[0].text;
+
+
+			if(not remote_conn or
+                           remote_address!=prev_remote_address or
+                           remote_port!=prev_remote_port or
+                           remote_ssh_username!=prev_remote_ssh_username or
+                           remote_ssh_password!=prev_remote_ssh_password):
+				remote_conn = yangrpc.connect(remote_address, int(remote_port), remote_ssh_username, remote_ssh_password, os.getenv('HOME')+"/.ssh/id_rsa.pub", os.getenv('HOME')+"/.ssh/id_rsa")
+				if(remote_conn==None):
+					print("Error: yangrpc failed to connect!")
+					time.sleep(1)
+					continue
+				else:
+					print("Connected to remote ...")
+
+			result2 = yangcli.yangcli(remote_conn, "xget %s"%(remote_instance_id))
+			text = result2.xpath('./data/%s'%(remote_instance_id))
+
+			print(text[0].text)
+
+			prev_remote_address = remote_address
+			prev_remote_port = remote_port
+			prev_remote_ssh_username = remote_ssh_username
+			prev_remote_ssh_password = remote_ssh_password
+
+			mylcd.lcd_clear()
+			mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
+			mylcd.lcd_display_string(text[0].text, 2)
+
 		time.sleep(1)
 
 	return(0)

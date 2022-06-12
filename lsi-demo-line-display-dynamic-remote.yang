@@ -1,0 +1,63 @@
+module lsi-demo-line-display-dynamic-remote {
+  namespace "http://lightside-instruments.com/ns/demo-line-display-dynamic-remote";
+  prefix demo-ldrd;
+
+  import ietf-netconf-client {
+    prefix ncc;
+  }
+
+  import ietf-tcp-client {
+    prefix tcpc;
+  }
+
+  import ietf-tcp-server {
+    prefix tcps;
+  }
+
+  import ietf-ssh-client {
+    prefix sshc;
+  }
+
+  import ietf-tls-client {
+    prefix tlsc;
+  }
+
+  import ietf-keystore {
+    prefix ks;
+  }
+
+  import lsi-demo-line-display {
+    prefix demo-ld;
+  }
+
+  import lsi-demo-line-display-dynamic {
+    prefix demo-ldd;
+  }
+
+  organization
+    "Lightside Instruments AS";
+  description
+    "Module augmenting the demo-line-display-dynamic module
+     with remote case specifying NETCONF device connection parameters
+     are specified and string to be used as data node instance-identifier on that device
+     to retrieve a certain leaf e.g.
+     /interface/interface[name='wlp2s0']/statistics/out-unicast-pkts.";
+
+  revision 2022-06-02 {
+    description
+      "Initial revision.";
+  }
+
+  augment "/demo-ld:line-display/demo-ld:type/demo-ldd:dynamic/demo-ldd:source" {
+    case remote {
+       leaf remote-instance-id {
+        type string;
+        mandatory true;
+      }
+      container remote-netconf {
+        uses ncc:netconf-client-initiate-stack-grouping;
+      }
+    }
+  }
+}
+

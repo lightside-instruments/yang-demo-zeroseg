@@ -2,23 +2,79 @@ module lsi-demo-line-display {
   namespace "http://lightside-instruments.com/ns/demo-line-display";
   prefix demo-ld;
 
+  import ietf-netconf-client {
+    prefix ncc;
+  }
+
+  import ietf-tcp-client {
+    prefix tcpc;
+  }
+
+  import ietf-tcp-server {
+    prefix tcps;
+  }
+
+  import ietf-ssh-client {
+    prefix sshc;
+  }
+
+  import ietf-tls-client {
+    prefix tlsc;
+  }
+
+  import ietf-keystore {
+    prefix ks;
+  }
+
+
+
   organization
-    "Lightside Instruments";
+    "Lightside Instruments AS";
   description
     "Demo module for management of a
      display that can show single line
      e.g. row with symbols.";
 
-  revision 2019-10-11 {
+  revision 2022-06-12 {
     description
-      "Initial revision.";
+      "Merged augment modules.";
   }
 
+
   container line-display {
-    choice content-type {
+    presence "enable display";
+    choice type {
       case static {
         leaf text {
           type string;
+        }
+      }
+
+      case dynamic {
+        choice source {
+          case remote {
+            leaf remote-instance-id {
+              type string;
+              mandatory true;
+            }
+
+            container remote-netconf {
+              uses ncc:netconf-client-initiate-stack-grouping;
+            }
+          }
+          case local {
+            leaf instance-id {
+              type instance-identifier {
+                require-instance false;
+              }
+              mandatory true;
+            }
+          }
+        }
+        leaf update-interval {
+          type uint32;
+          units "milliseconds";
+          mandatory true;
         }
       }
     }

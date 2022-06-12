@@ -1,5 +1,5 @@
-bin_SCRIPTSS=yang-demo-line-display.py
+bin_SCRIPTS=yang-demo-line-display.py
 
-dist_examples_yang_DATA = lsi-demo-line-display-instance-id.yang \
+dist_examples_yang_DATA = \
 lsi-demo-line-display.yang
 
