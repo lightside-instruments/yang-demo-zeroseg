@@ -3,11 +3,11 @@
 import time
 import sys, os
 import argparse
-from yangcli import yangcli
+import yangcli
 from lxml import etree
 import yangrpc
-#import ZeroSeg.led as led
-import I2C_LCD_driver
+import ZeroSeg.led as led
+#import I2C_LCD_driver
 #from time import *
 
 
@@ -55,32 +55,39 @@ def main():
 	print("Connected ..")
 	time.sleep(1)
 
-	mylcd = I2C_LCD_driver.lcd()
+#	mylcd = I2C_LCD_driver.lcd()
 
-	#zeroseg_led = led.sevensegment(cascaded=2)
+	zeroseg_led = led.sevensegment(cascaded=2)
 	remote_conn = {}
 	while(1):
 
 		result = yangcli.yangcli(conn, "xget /line-display")
-
+		print(etree.tostring(result))
 		text = result.xpath('./data/line-display/text')
 		instance_id = result.xpath('./data/line-display/instance-id')
 		remote_instance_id = result.xpath('./data/line-display/remote-instance-id')
 
 		if(len(text)==1):
 			print(text[0].text)
-			#zeroseg_led.write_text(1,text[0].text)
-			mylcd.lcd_clear()
-			mylcd.lcd_display_string(text[0].text, 1)
+			zeroseg_led.write_text(1,text[0].text)
+#			mylcd.lcd_clear()
+#			mylcd.lcd_display_string(text[0].text, 1)
 
 		elif(len(instance_id)==1):
 			print(instance_id[0].text)
 			update_interval = result.xpath('./data/line-display/update-interval')
+			print(instance_id[0].text)
 			result2 = yangcli.yangcli(conn, "xget %s"%(instance_id[0].text))
 			text = result2.xpath('./data/%s'%(instance_id[0].text))
-			mylcd.lcd_clear()
-			mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
-			mylcd.lcd_display_string(text[0].text, 2)
+			if(len(text)==1):
+
+				print(text[0].text)
+#				mylcd.lcd_clear()
+#				mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
+#				mylcd.lcd_display_string(text[0].text, 2)
+				zeroseg_led.write_text(1,text[0].text)
+			else:
+				print("")
 
 		elif(len(remote_instance_id)==1):
 			update_interval = result.xpath('./data/line-display/update-interval')
@@ -114,9 +121,9 @@ def main():
 			prev_remote_ssh_username = remote_ssh_username
 			prev_remote_ssh_password = remote_ssh_password
 
-			mylcd.lcd_clear()
-			mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
-			mylcd.lcd_display_string(text[0].text, 2)
+#			mylcd.lcd_clear()
+#			mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
+#			mylcd.lcd_display_string(text[0].text, 2)
 
 		time.sleep(1)
 

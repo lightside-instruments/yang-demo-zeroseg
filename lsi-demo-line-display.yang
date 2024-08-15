@@ -2,29 +2,29 @@ module lsi-demo-line-display {
   namespace "http://lightside-instruments.com/ns/demo-line-display";
   prefix demo-ld;
 
-  import ietf-netconf-client {
-    prefix ncc;
-  }
+//  import ietf-netconf-client {
+//    prefix ncc;
+//  }
 
-  import ietf-tcp-client {
-    prefix tcpc;
-  }
+//  import ietf-tcp-client {
+//    prefix tcpc;
+//  }
 
-  import ietf-tcp-server {
-    prefix tcps;
-  }
+//  import ietf-tcp-server {
+//    prefix tcps;
+//  }
 
-  import ietf-ssh-client {
-    prefix sshc;
-  }
+//  import ietf-ssh-client {
+//    prefix sshc;
+//  }
 
-  import ietf-tls-client {
-    prefix tlsc;
-  }
+//  import ietf-tls-client {
+//    prefix tlsc;
+//  }
 
-  import ietf-keystore {
-    prefix ks;
-  }
+//  import ietf-keystore {
+//    prefix ks;
+//  }
 
 
 
@@ -35,9 +35,9 @@ module lsi-demo-line-display {
      display that can show single line
      e.g. row with symbols.";
 
-  revision 2022-06-12 {
+  revision 2024-08-15 {
     description
-      "Merged augment modules.";
+      "Temporary disabled remote dynamic mode module dependencies.";
   }
 
 
@@ -58,9 +58,9 @@ module lsi-demo-line-display {
               mandatory true;
             }
 
-            container remote-netconf {
-              uses ncc:netconf-client-initiate-stack-grouping;
-            }
+ //           container remote-netconf {
+ //             uses ncc:netconf-client-initiate-stack-grouping;
+ //           }
           }
           case local {
             leaf instance-id {
