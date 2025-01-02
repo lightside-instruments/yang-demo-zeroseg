@@ -59,6 +59,7 @@ def main():
 
 	zeroseg_led = led.sevensegment(cascaded=2)
 	remote_conn = {}
+	update_interval = 1000 # milliseconds
 	while(1):
 
 		result = yangcli.yangcli(conn, "xget /line-display")
@@ -68,6 +69,7 @@ def main():
 		remote_instance_id = result.xpath('./data/line-display/remote-instance-id')
 
 		if(len(text)==1):
+			update_intreval = 1000
 			print(text[0].text)
 			zeroseg_led.write_text(1,text[0].text)
 #			mylcd.lcd_clear()
@@ -75,7 +77,7 @@ def main():
 
 		elif(len(instance_id)==1):
 			print(instance_id[0].text)
-			update_interval = result.xpath('./data/line-display/update-interval')
+			update_interval = result.xpath('./data/line-display/update-interval')[0].text
 			print(instance_id[0].text)
 			result2 = yangcli.yangcli(conn, "xget %s"%(instance_id[0].text))
 			text = result2.xpath('./data/%s'%(instance_id[0].text))
@@ -90,7 +92,7 @@ def main():
 				print("")
 
 		elif(len(remote_instance_id)==1):
-			update_interval = result.xpath('./data/line-display/update-interval')
+			update_interval = result.xpath('./data/line-display/update-interval')[0].text
 			remote_address = result.xpath('./data/line-display/remote-netconf/ssh/tcp-client-parameters/remote-address')[0].text;
 			remote_port = result.xpath('./data/line-display/remote-netconf/ssh/tcp-client-parameters/remote-port')[0].text;
 			remote_ssh_username = result.xpath('./data/line-display/remote-netconf/ssh/ssh-client-parameters/client-identity/username')[0].text;
@@ -125,7 +127,7 @@ def main():
 #			mylcd.lcd_display_string(instance_id[0].text[-16:], 1)
 #			mylcd.lcd_display_string(text[0].text, 2)
 
-		time.sleep(1)
+		time.sleep(float(update_interval)/1000)
 
 	return(0)
 sys.exit(main())
